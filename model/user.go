@@ -42,7 +42,12 @@ func GetAllUsers(startIdx int, num int) (users []*User, err error) {
 }
 
 func SearchUsers(keyword string) (users []*User, err error) {
-	err = DB.Omit("password").Where("id = ? or username LIKE ? or email LIKE ? or display_name LIKE ?", keyword, keyword+"%", keyword+"%", keyword+"%").Find(&users).Error
+	if uid, ok := strconv.Atoi(keyword); ok == nil {
+		err = DB.Omit("password").Where("id = ? or username LIKE ? or email LIKE ? or display_name LIKE ?", id, keyword+"%", keyword+"%", keyword+"%").Find(&users).Error
+	} else {
+		err = DB.Omit("password").Where("username LIKE ? or email LIKE ? or display_name LIKE ?", keyword+"%", keyword+"%", keyword+"%").Find(&users).Error
+	}
+
 	return users, err
 }
 
